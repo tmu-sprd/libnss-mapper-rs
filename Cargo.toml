@@ -1,0 +1,46 @@
+[package]
+name = "libnss-mapper-rs"
+version = "0.1.0"
+edition = "2021"
+license = "Unlicense"
+description = "A library mapping arbitrary users to real ones"
+readme = "README.md"
+authors = ["Tino Müller <tino.mueller@spreadgroup.com>"]
+
+[dependencies]
+libc = "0.2"
+lazy_static = "1.4"
+paste = "1.0"
+libnss = "0.4"
+syslog = "^6.0"
+
+[lib]
+name = "nss_mapper"
+crate-type = ["cdylib"]
+
+[features]
+default = ["syslog"]
+syslog = []
+
+[package.metadata.deb]
+name = "libnss-mapper"
+maintainer = "Tino Müller <tino.mueller@spreadgroup.com>"
+copyright = "2023, Tino Müller <tino.mueller@spreadgroup.com>"
+extended-description = """\
+A library for the Name Service Switch \
+to map arbitrary users to real ones."""
+depends = "$auto"
+section = "admin"
+priority = "optional"
+conflicts = "libnss-mapper-nosyslog"
+assets = [
+    ["target/x86_64-unknown-linux-gnu/release/libnss_mapper.so", "usr/lib/x86_64-linux-gnu/libnss_mapper.so.2", "644"],
+    ["README.md", "usr/share/doc/libnss_mapper/README", "644"],
+    ["assets/nssmapper.conf", "etc/", "644"]
+]
+maintainer-scripts = "debian"
+
+[package.metadata.deb.variants.no-syslog]
+name = "libnss-mapper-nosyslog"
+default-features = false
+conflicts = "libnss-mapper"
